@@ -1,6 +1,6 @@
 # flutter_viewer_usdz
 
-Flutter plugin project that allows you to display USDZ models from a url.
+A new Flutter plugin project that allows you to visualize USDZ models.
 
 ## Demonstration
 
@@ -24,7 +24,7 @@ To install this plugin, add the following line to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_viewer_usdz: ^0.0.5
+  flutter_viewer_usdz: ^0.0.6
 ```
 
 Then, run the following command to install the dependencies:
@@ -42,46 +42,6 @@ import 'package:flutter_viewer_usdz/flutter_viewer_usdz.dart';
 ```
 
 You can then use the functionalities of the plugin in your application.
-
-### Example
-
-Here is a basic example of how to use the plugin:
-
-```dart
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'USDZ Viewer Demo',
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('USDZ Models')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            final viewer = FlutterViewerUsdz();
-            await viewer.loadUSDZFile('url_del_modelo.usdz', isUrl: true);
-          },
-          child: const Text('Load USDZ Model'),
-        ),
-      ),
-    );
-  }
-}
-```
 
 ## Contributions
 

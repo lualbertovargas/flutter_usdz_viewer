@@ -6,10 +6,12 @@ public class FlutterViewerUsdzPlugin: NSObject, FlutterPlugin, QLPreviewControll
     private var previewController: QLPreviewController?
     private var fileURL: URL?
     private var tempFileURL: URL?
+    private var registrar: FlutterPluginRegistrar?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_viewer_usdz", binaryMessenger: registrar.messenger())
         let instance = FlutterViewerUsdzPlugin()
+        instance.registrar = registrar
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
@@ -35,61 +37,75 @@ public class FlutterViewerUsdzPlugin: NSObject, FlutterPlugin, QLPreviewControll
         print("📱 Loading USDZ from: \(path)")
 
         if isUrl {
-            guard let url = URL(string: path) else {
-                result(FlutterError(code: "INVALID_URL", message: "Invalid URL format", details: nil))
+            handleUrlLoad(path: path, result: result)
+        } else {
+            handleAssetLoad(path: path, result: result)
+        }
+    }
+    
+    private func handleAssetLoad(path: String, result: @escaping FlutterResult) {
+        guard let key = registrar?.lookupKey(forAsset: path) else {
+            result(FlutterError(code: "ASSET_NOT_FOUND", message: "Asset not found: \(path)", details: nil))
+            return
+        }
+        
+        guard let assetPath = Bundle.main.path(forResource: key, ofType: nil) else {
+            result(FlutterError(code: "ASSET_PATH_ERROR", message: "Cannot get asset path: \(path)", details: nil))
+            return
+        }
+        
+        self.fileURL = URL(fileURLWithPath: assetPath)
+        showPreview(result: result)
+    }
+    
+    private func handleUrlLoad(path: String, result: @escaping FlutterResult) {
+        guard let url = URL(string: path) else {
+            result(FlutterError(code: "INVALID_URL", message: "Invalid URL format", details: nil))
+            return
+        }
+        
+        let fileName = url.lastPathComponent
+        let tempDir = FileManager.default.temporaryDirectory
+        let localURL = tempDir.appendingPathComponent(fileName)
+        self.tempFileURL = localURL
+        
+        let task = URLSession.shared.downloadTask(with: url) { [weak self] (tempURL, response, error) in
+            guard let self = self else { return }
+            
+            if let error = error {
+                DispatchQueue.main.async {
+                    print("❌ Download error: \(error)")
+                    result(FlutterError(code: "DOWNLOAD_ERROR", message: error.localizedDescription, details: nil))
+                }
                 return
             }
             
-            // Crear un nombre de archivo temporal
-            let fileName = url.lastPathComponent
-            let tempDir = FileManager.default.temporaryDirectory
-            let localURL = tempDir.appendingPathComponent(fileName)
-            self.tempFileURL = localURL
+            guard let tempURL = tempURL else {
+                DispatchQueue.main.async {
+                    result(FlutterError(code: "NO_FILE", message: "No file downloaded", details: nil))
+                }
+                return
+            }
             
-            // Descargar el archivo
-            let task = URLSession.shared.downloadTask(with: url) { [weak self] (tempURL, response, error) in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    DispatchQueue.main.async {
-                        print("❌ Download error: \(error)")
-                        result(FlutterError(code: "DOWNLOAD_ERROR", message: error.localizedDescription, details: nil))
-                    }
-                    return
+            do {
+                if FileManager.default.fileExists(atPath: localURL.path) {
+                    try FileManager.default.removeItem(at: localURL)
                 }
                 
-                guard let tempURL = tempURL else {
-                    DispatchQueue.main.async {
-                        result(FlutterError(code: "NO_FILE", message: "No file downloaded", details: nil))
-                    }
-                    return
-                }
+                try FileManager.default.moveItem(at: tempURL, to: localURL)
+                self.fileURL = localURL
                 
-                do {
-                    // Si ya existe un archivo temporal anterior, lo eliminamos
-                    if FileManager.default.fileExists(atPath: localURL.path) {
-                        try FileManager.default.removeItem(at: localURL)
-                    }
-                    
-                    // Mover el archivo descargado a nuestra ubicación temporal
-                    try FileManager.default.moveItem(at: tempURL, to: localURL)
-                    self.fileURL = localURL
-                    
-                    DispatchQueue.main.async {
-                        self.showPreview(result: result)
-                    }
-                } catch {
-                    print("❌ File error: \(error)")
-                    DispatchQueue.main.async {
-                        result(FlutterError(code: "FILE_ERROR", message: error.localizedDescription, details: nil))
-                    }
+                DispatchQueue.main.async {
+                    self.showPreview(result: result)
+                }
+            } catch {
+                print("❌ File error: \(error)")
+                DispatchQueue.main.async {
+                    result(FlutterError(code: "FILE_ERROR", message: error.localizedDescription, details: nil))
                 }
             }
-            task.resume()
-        } else {
-            self.fileURL = URL(fileURLWithPath: path)
-            showPreview(result: result)
         }
+        task.resume()
     }
     
     private func showPreview(result: @escaping FlutterResult) {
@@ -116,7 +132,6 @@ public class FlutterViewerUsdzPlugin: NSObject, FlutterPlugin, QLPreviewControll
             self?.previewController?.dismiss(animated: true)
             self?.previewController = nil
             
-            // Limpiar archivo temporal si existe
             if let tempURL = self?.tempFileURL,
                FileManager.default.fileExists(atPath: tempURL.path) {
                 try? FileManager.default.removeItem(at: tempURL)
@@ -128,7 +143,6 @@ public class FlutterViewerUsdzPlugin: NSObject, FlutterPlugin, QLPreviewControll
         }
     }
     
-    // MARK: - QLPreviewControllerDataSource
     public func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
         return fileURL != nil ? 1 : 0
     }

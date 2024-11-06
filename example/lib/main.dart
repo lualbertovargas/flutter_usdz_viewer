@@ -31,15 +31,17 @@ class _HomePageState extends State<HomePage> {
   final List<ModelItem> models = [
     ModelItem(
       name: 'Room Plan',
-      url: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
+      path: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
       icon: Icons.home,
       color: Colors.blue,
+      isLocal: false,
     ),
     ModelItem(
       name: 'AirPods Max',
-      url: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
+      path: 'assets/model.usdz',
       icon: Icons.headphones,
       color: Colors.grey[800]!,
+      isLocal: true,
     ),
   ];
 
@@ -70,21 +72,33 @@ class _HomePageState extends State<HomePage> {
 
 class ModelCard extends StatelessWidget {
   final ModelItem model;
+  final _viewer = FlutterViewerUsdz();
 
-  const ModelCard({
+  ModelCard({
     super.key,
     required this.model,
   });
 
   Future<void> _showModel(BuildContext context) async {
     try {
-      final viewer = FlutterViewerUsdz();
-      await viewer.loadUSDZFile(model.url, isUrl: true);
+      final success = model.isLocal
+          ? await _viewer.loadUSDZFileFromPath(model.path)
+          : await _viewer.loadUSDZFileFromUrl(model.path);
+
+      if (!success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Failed to load ${model.isLocal ? 'local' : 'remote'} model'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text('Error loading ${model.name}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -132,6 +146,15 @@ class ModelCard extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 4),
+              Text(
+                model.isLocal ? 'Local File' : 'Remote URL',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.8),
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
@@ -142,14 +165,16 @@ class ModelCard extends StatelessWidget {
 
 class ModelItem {
   final String name;
-  final String url;
+  final String path;
   final IconData icon;
   final Color color;
+  final bool isLocal;
 
   const ModelItem({
     required this.name,
-    required this.url,
+    required this.path,
     required this.icon,
     required this.color,
+    required this.isLocal,
   });
 }

@@ -1,3 +1,13 @@
+## 0.0.6
+-Separated into two methods according to the origin of the information:
+    Local file the method is loadUSDZFileFromPath()
+    External URL the method is loadUSDZFileFromUrl()
+- Better documentation of flutter_viewer_usdz.dart
+- Two more descriptive examples were placed according to the information
+
+## 0.0.5
+-There were only adjustments in images and package description.
+
 ## 0.0.4
 -There were only adjustments in images and package description.
 
@@ -17,5 +27,4 @@
   - `dispose()`: Releases resources used by the plugin.
 
 ## 0.0.1
-
 - Initial release of the `flutter_viewer_usdz` plugin.

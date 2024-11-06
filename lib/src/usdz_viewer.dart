@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'platform_interface.dart';
 
 class UsdzViewer extends StatefulWidget {
-  final String modelUrl;
-  final bool isUrl;
+  final String path;
+  final bool isFromUrl;
   final Function(bool)? onLoadComplete;
   final Function(String)? onError;
 
   const UsdzViewer({
     Key? key,
-    required this.modelUrl,
-    this.isUrl = true,
+    required this.path,
+    this.isFromUrl = true,
     this.onLoadComplete,
     this.onError,
   }) : super(key: key);
@@ -38,8 +38,11 @@ class _UsdzViewerState extends State<UsdzViewer> {
     });
 
     try {
-      final success = await FlutterViewerUsdzPlatform.instance
-          .loadUSDZFile(widget.modelUrl, isUrl: widget.isUrl);
+      final success = widget.isFromUrl
+          ? await FlutterViewerUsdzPlatform.instance
+              .loadUSDZFileFromUrl(widget.path)
+          : await FlutterViewerUsdzPlatform.instance
+              .loadUSDZFileFromPath(widget.path);
 
       if (mounted) {
         if (success) {
