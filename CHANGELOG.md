@@ -1,3 +1,7 @@
+## 0.0.7
+-There were only adjustments in images and package description.
+
+
 ## 0.0.6
 -Separated into two methods according to the origin of the information:
     Local file the method is loadUSDZFileFromPath()
