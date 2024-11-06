@@ -5,15 +5,29 @@ class MethodChannelFlutterViewerUsdz extends FlutterViewerUsdzPlatform {
   final methodChannel = const MethodChannel('flutter_viewer_usdz');
 
   @override
-  Future<bool> loadUSDZFile(String path, {bool isUrl = false}) async {
+  Future<bool> loadUSDZFileFromPath(String path) async {
     try {
       final result = await methodChannel.invokeMethod<bool>('loadUSDZFile', {
         'path': path,
-        'isUrl': isUrl,
+        'isUrl': false,
       });
       return result ?? false;
     } on PlatformException catch (e) {
-      print('Error: ${e.message}');
+      print('Error loading USDZ file from path: ${e.message}');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> loadUSDZFileFromUrl(String url) async {
+    try {
+      final result = await methodChannel.invokeMethod<bool>('loadUSDZFile', {
+        'path': url,
+        'isUrl': true,
+      });
+      return result ?? false;
+    } on PlatformException catch (e) {
+      print('Error loading USDZ file from URL: ${e.message}');
       return false;
     }
   }
@@ -25,7 +39,7 @@ class MethodChannelFlutterViewerUsdz extends FlutterViewerUsdzPlatform {
         'angle': angle,
       });
     } on PlatformException catch (e) {
-      print('Error: ${e.message}');
+      print('Error rotating model: ${e.message}');
     }
   }
 
@@ -34,7 +48,7 @@ class MethodChannelFlutterViewerUsdz extends FlutterViewerUsdzPlatform {
     try {
       await methodChannel.invokeMethod<void>('dispose');
     } on PlatformException catch (e) {
-      print('Error: ${e.message}');
+      print('Error disposing viewer: ${e.message}');
     }
   }
 }

@@ -14,8 +14,13 @@ abstract class FlutterViewerUsdzPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<bool> loadUSDZFile(String path, {bool isUrl = false}) {
-    throw UnimplementedError('loadUSDZFile() has not been implemented.');
+  Future<bool> loadUSDZFileFromPath(String path) {
+    throw UnimplementedError(
+        'loadUSDZFileFromPath() has not been implemented.');
+  }
+
+  Future<bool> loadUSDZFileFromUrl(String url) {
+    throw UnimplementedError('loadUSDZFileFromUrl() has not been implemented.');
   }
 
   Future<void> rotateModel(double angle) {

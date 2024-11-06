@@ -1,6 +1,6 @@
 name: flutter_viewer_usdz
 description: "Flutter plugin for visualizing USDZ models."
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/lualbertovargas/flutter_usdz_viewer
 
 environment:
