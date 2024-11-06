@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_viewer_usdz (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_viewer_usdz (from `.symlinks/plugins/flutter_viewer_usdz/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_viewer_usdz:
+    :path: ".symlinks/plugins/flutter_viewer_usdz/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_viewer_usdz: 9b58afda23d3ae72cb64d3f3568953f520a229b6
+
+PODFILE CHECKSUM: abdba453fd5ba8b196691f42bbbec2d578bc2af8
+
+COCOAPODS: 1.15.2
