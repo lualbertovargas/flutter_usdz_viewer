@@ -1,14 +1,13 @@
 # flutter_viewer_usdz
 
-A new Flutter plugin project that allows you to visualize USDZ models.
+Flutter plugin project that allows you to display USDZ models from a url.
 
 ## Demonstration
 
-<div style="text-align: center;">
-  <video width="375" controls>
-    <source src="https://i.imgur.com/BaXR24R.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+<div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap;">
+  <img src="https://i.imgur.com/5fnfAIW.jpeg" alt="Left Image" width="250" height="500" style="margin-right: 10px;"/>
+  <img src="https://i.imgur.com/7Uepigr.gif" alt="Demonstration" width="250" height="500" style="margin: 0 10px;"/>
+  <img src="https://i.imgur.com/1q0F9XK.jpeg" alt="Right Image" width="250" height="500" style="margin-left: 10px;"/>
 </div>
 
 ## Introduction
@@ -25,7 +24,7 @@ To install this plugin, add the following line to your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_viewer_usdz: ^0.0.2
+  flutter_viewer_usdz: ^0.0.5
 ```
 
 Then, run the following command to install the dependencies:

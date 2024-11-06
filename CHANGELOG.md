@@ -1,3 +1,9 @@
+## 0.0.4
+-There were only adjustments in images and package description.
+
+## 0.0.3
+-There were only adjustments in images and package description.
+
 ## 0.0.2
 
 - Updated the plugin version.
