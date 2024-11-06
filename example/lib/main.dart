@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'USDZ Viewer Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
@@ -30,15 +31,13 @@ class _HomePageState extends State<HomePage> {
   final List<ModelItem> models = [
     ModelItem(
       name: 'Room Plan',
-      url:
-          'https://firebasestorage.googleapis.com/v0/b/vbgbouwadvies-f17a0.appspot.com/o/flow_damages%2F51848748-7747-4d04-80e3-337195122835%2Froomplan%2F36ac7954-a5ea-4ac0-910a-68f605b18eac.usdz?alt=media&token=c55c457a-bf06-465d-ae37-754595657a38',
+      url: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
       icon: Icons.home,
       color: Colors.blue,
     ),
     ModelItem(
       name: 'AirPods Max',
-      url:
-          'https://www.apple.com/105/media/us/airpods-max/2020/996b980b-3131-44f1-af6c-fe72f9b3bfb5/ar/airpods-max_spacegray.usdz',
+      url: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
       icon: Icons.headphones,
       color: Colors.grey[800]!,
     ),
